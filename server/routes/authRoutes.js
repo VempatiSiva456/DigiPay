@@ -66,7 +66,7 @@ router.post("/send-transaction", auth, async (req, res) => {
     const user = await User.findById(req.user._id);
     const userEmail = user.email;
 
-    const privateKey = process.env.PRIVATE_KEY;
+    const privateKey = process.env.PRIVATE_KEY_1;
     const contractAddress = process.env.CONTRACT_ADDRESS;
 
     const provider = new JsonRpcProvider(process.env.RPC_URL);
@@ -75,20 +75,24 @@ router.post("/send-transaction", auth, async (req, res) => {
 
     const contract = new ethers.Contract(contractAddress, abi, wallet);
 
-    console.log(contract);
-
+    console.log("Sending transaction...");
     const txResponse = await contract.sendETH(recipient, note, userEmail, {
       value: ethers.parseEther(amount),
     });
+    console.log("Transaction sent. Waiting for confirmation...");
 
-    await txResponse.wait();
+    const txReceipt = await txResponse.wait();
+    console.log("Transaction confirmed:", txReceipt);
+    console.log("logs: ",txReceipt.logs)
+
+   
     res.json({ transactionHash: txResponse.hash });
-    
   } catch (error) {
     console.error("Error sending transaction:", error);
     res.status(500).json({ error: "Failed to send transaction" });
   }
 });
+
 
 
 
