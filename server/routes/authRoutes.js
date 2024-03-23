@@ -1,8 +1,14 @@
 const express = require('express');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+require('dotenv').config;
+const { ethers, JsonRpcProvider } = require("ethers");
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
+const fs = require('fs');
+
+const abiData = JSON.parse(fs.readFileSync("./abi.json", "utf8"));
+const abi = abiData.abi;
 
 router.post('/register', async (req, res) => {
   try {
@@ -22,8 +28,6 @@ router.post('/register', async (req, res) => {
       res.status(500).send({ error: 'Server error. Please try again later.' }); 
   }
 });
-
-
   
 
 router.post('/login', async (req, res) => {
@@ -56,18 +60,36 @@ router.get('/verifySession', (req, res) => {
   }
 });
 
-router.get('/current-user', auth, async (req, res) => {
+router.post("/send-transaction", auth, async (req, res) => {
   try {
+    const { recipient, amount, note } = req.body;
     const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).send({ error: 'User not found' });
-    }
-    res.send({ email: user.email });
+    const userEmail = user.email;
+
+    const privateKey = process.env.PRIVATE_KEY;
+    const contractAddress = process.env.CONTRACT_ADDRESS;
+
+    const provider = new JsonRpcProvider(process.env.RPC_URL);
+
+    const wallet = new ethers.Wallet(privateKey, provider);
+
+    const contract = new ethers.Contract(contractAddress, abi, wallet);
+
+    console.log(contract);
+
+    const txResponse = await contract.sendETH(recipient, note, userEmail, {
+      value: ethers.parseEther(amount),
+    });
+
+    await txResponse.wait();
+    res.json({ transactionHash: txResponse.hash });
+    
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'Server error. Please try again later.' });
+    console.error("Error sending transaction:", error);
+    res.status(500).json({ error: "Failed to send transaction" });
   }
 });
+
 
 
 

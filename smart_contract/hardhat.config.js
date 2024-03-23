@@ -21,7 +21,6 @@ module.exports = {
   networks: {
     mumbai: {
       url: process.env.RPC_URL,
-      chainId: process.env.CHAIN_ID,
       accounts: [process.env.PRIVATE_KEY],
     },
   },
