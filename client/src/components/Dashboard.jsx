@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box, Container } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../contexts/AuthContext';
+import ConnectWallet from './ConnectWallet';
 
 const Dashboard = () => {
   const { logout } = useAuth();
@@ -21,8 +22,8 @@ const Dashboard = () => {
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
           <Typography variant="body1" gutterBottom>
-            Welcome to your dashboard!
           </Typography>
+          <ConnectWallet />
         </Box>
       </Container>
     </>
