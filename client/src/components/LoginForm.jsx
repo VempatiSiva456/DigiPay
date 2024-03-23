@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
+import { useAuth } from '../contexts/AuthContext';
 
 const defaultTheme = createTheme();
 
@@ -23,11 +24,19 @@ const validateEmail = (email) => {
 };
 
 export default function SignIn() {
+
+  const { isLoggedIn, login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleEmailChange = (e) => {
     const emailInput = e.target.value;
@@ -44,25 +53,13 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to login');
-        }
-        const { token } = await response.json();
-        console.log('Login successful', token);
-
+        await login(email, password);
         navigate('/dashboard');
     } catch (error) {
         console.error('Login error:', error.message);
-        setError('Failed to login. Please check your credentials.');
+        setError(error.message || 'Failed to login. Please check your credentials.');
     }
-};
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
