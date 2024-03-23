@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
 
       const user = new User({ name, email, password });
       await user.save();
-      
+
       res.status(201).send({ message: 'User successfully registered. Please log in.' });
   } catch (error) {
       console.error(error);
@@ -55,6 +55,20 @@ router.get('/verifySession', (req, res) => {
     res.status(401).json({ isLoggedIn: false });
   }
 });
+
+router.get('/current-user', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+    res.send({ email: user.email });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Server error. Please try again later.' });
+  }
+});
+
 
 
 router.post('/logout', auth, (req, res) => {

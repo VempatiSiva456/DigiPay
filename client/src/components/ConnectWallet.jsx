@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { ethers, formatUnits } from "ethers";
 import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from "@mui/material";
 
 const ConnectWallet = () => {
@@ -26,9 +26,9 @@ const ConnectWallet = () => {
   };
 
   const getBalance = async (account) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.BrowserProvider(window.ethereum);
     const balance = await provider.getBalance(account);
-    setCurrentBalance(ethers.utils.formatEther(balance));
+    setCurrentBalance(formatUnits(balance));
   };
 
   useEffect(() => {
