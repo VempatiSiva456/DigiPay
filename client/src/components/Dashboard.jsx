@@ -12,6 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 import ConnectWallet from "./ConnectWallet";
 import TransactionForm from "./TransactionForm";
 import abiData from "../abi.json";
+import ShowHistory from "./ShowHistory";
 
 const Dashboard = () => {
   const { logout } = useAuth();
@@ -54,7 +55,15 @@ const Dashboard = () => {
             <Typography variant="h5" gutterBottom>
               Transaction Form
             </Typography>
-            <TransactionForm contractAddress={contractAddress} abi={abi} />
+            <TransactionForm />
+          </Box>
+        </Box>
+        <Box>
+          <Box mt={3}>
+            <Typography variant="h5" gutterBottom>
+              History of Transactions
+            </Typography>
+            <ShowHistory/>
           </Box>
         </Box>
       </Container>
