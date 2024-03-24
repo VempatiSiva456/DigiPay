@@ -60,6 +60,11 @@ router.get('/verifySession', (req, res) => {
   }
 });
 
+router.get('/user-name', auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  res.status(201).json({name: user.name});
+});
+
 router.post("/send-transaction", auth, async (req, res) => {
   try {
     const { recipient, amount, note } = req.body;
