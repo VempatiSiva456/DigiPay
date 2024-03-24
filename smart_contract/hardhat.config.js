@@ -21,7 +21,7 @@ module.exports = {
   networks: {
     mumbai: {
       url: process.env.RPC_URL,
-      accounts: [process.env.PRIVATE_KEY_2],
+      accounts: [process.env.PRIVATE_KEY_1],
     },
   },
   solidity: "0.8.24",

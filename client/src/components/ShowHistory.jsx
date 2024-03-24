@@ -17,7 +17,7 @@ import abiData from "../abi.json";
 const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =
     "https://polygon-mumbai.infura.io/v3/52bcd780570e4378afca6c432b67ce94";
-  const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
+  const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
   const abi = abiData.abi;
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

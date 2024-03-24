@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
-  const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
+  const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
 
