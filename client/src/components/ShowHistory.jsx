@@ -22,34 +22,66 @@ const ShowHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [contractBalance, setContractBalance] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchUserEmail = async () => {
       try {
-        const provider = new JsonRpcProvider(providerUrl);
-        const contract = new ethers.Contract(contractAddress, abi, provider);
+        const response = await fetch(
+          "http://localhost:5000/api/auth/current-user",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
-        const events = await contract.queryFilter("*");
-        const transactionsData = events.map((event) => ({
-          hash: event.transactionHash,
-          blockNumber: event.blockNumber,
-          amount: formatEther(event.args.amount),
-        }));
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
 
-        setTransactions(transactionsData);
-
-        const curr_balance = await contract.getBalance();
-        setContractBalance(formatEther(curr_balance));
-        console.log("Balance in Contract: ", contractBalance);
+        const data = await response.json();
+        setUserEmail(data.email);
       } catch (error) {
-        console.error("Error fetching transactions:", error);
-      } finally {
+        console.error("Error fetching user email:", error);
+      }
+      finally {
         setIsLoading(false);
       }
     };
 
-    fetchTransactions();
-  }, [contractAddress, abi, providerUrl]);
+    fetchUserEmail();
+  }, []);
+
+  useEffect(() => {
+    if (userEmail) {
+      const fetchTransactions = async () => {
+        try {
+          const provider = new JsonRpcProvider(providerUrl);
+          const contract = new ethers.Contract(contractAddress, abi, provider);
+
+          const events = await contract.queryFilter("*");
+          const filteredEvents = events.filter(
+            (event) => event.args[4] === userEmail
+          );
+          const transactionsData = filteredEvents.map((event) => ({
+            hash: event.transactionHash,
+            blockNumber: event.blockNumber,
+            sender: event.args[0],
+            recipient: event.args[1],
+            amount: formatEther(event.args[2]),
+            note: event.args[3],
+            email: event.args[4],
+          }));
+
+          setTransactions(transactionsData);
+        } catch (error) {
+          console.error("Error fetching transactions:", error);
+        }
+      };
+
+      fetchTransactions();
+    }
+  }, [userEmail, contractAddress, abi, providerUrl]); // Added userEmail as a dependency
 
   if (isLoading) return <p>Loading transactions...</p>;
 
@@ -83,31 +115,38 @@ const ShowHistory = () => {
             <TableRow>
               <TableCell>S.No</TableCell>
               <TableCell>Hash</TableCell>
+              <TableCell>Sender</TableCell>
+              <TableCell>Recipient</TableCell>
+              <TableCell>Note</TableCell>
+              <TableCell>Email</TableCell>
               <TableCell align="right">Amount (ETH)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.length > 0 ? (
-              transactions.map((tx, index) => (
-                <TableRow key={index}>
-                  <TableCell component="th" scope="row">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`https://mumbai.polygonscan.com/tx/${tx.hash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {tx.hash}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="right">{tx.amount}</TableCell>
-                </TableRow>
-              ))
-            ) : (
+            {transactions.map((tx, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {index + 1}
+                </TableCell>
+                <TableCell>
+                  <Link
+                    href={`https://mumbai.polygonscan.com/tx/${tx.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {tx.hash}
+                  </Link>
+                </TableCell>
+                <TableCell>{tx.sender}</TableCell>
+                <TableCell>{tx.recipient}</TableCell>
+                <TableCell>{tx.note}</TableCell>
+                <TableCell>{tx.email}</TableCell>
+                <TableCell align="right">{tx.amount}</TableCell>
+              </TableRow>
+            ))}
+            {transactions.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} align="center">
+                <TableCell colSpan={7} align="center">
                   No transactions found.
                 </TableCell>
               </TableRow>

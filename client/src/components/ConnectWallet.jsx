@@ -3,7 +3,6 @@ import { ethers, formatUnits } from "ethers";
 import {
   Button,
   Box,
-  Typography,
   Table,
   TableBody,
   TableCell,
