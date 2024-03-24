@@ -71,38 +71,6 @@ router.get("/current-user", auth, async (req, res) => {
   res.status(201).json({ name: user.name, email: user.email });
 });
 
-router.post("/send-transaction", auth, async (req, res) => {
-  try {
-    const { recipient, amount, note } = req.body;
-    const user = await User.findById(req.user._id);
-    const userEmail = user.email;
-
-    const privateKey = process.env.PRIVATE_KEY_1;
-    const contractAddress = process.env.CONTRACT_ADDRESS;
-
-    const provider = new JsonRpcProvider(process.env.RPC_URL);
-
-    const wallet = new ethers.Wallet(privateKey, provider);
-
-    const contract = new ethers.Contract(contractAddress, abi, wallet);
-
-    console.log("Sending transaction...");
-    const txResponse = await contract.sendETH(recipient, note, userEmail, {
-      value: ethers.parseEther(amount),
-    });
-    console.log("Transaction sent. Waiting for confirmation...");
-
-    const txReceipt = await txResponse.wait();
-    console.log("Transaction confirmed:", txReceipt);
-    console.log("logs: ", txReceipt.logs);
-
-    res.json({ transactionHash: txResponse.hash });
-  } catch (error) {
-    console.error("Error sending transaction:", error);
-    res.status(500).json({ error: "Failed to send transaction" });
-  }
-});
-
 router.post("/logout", auth, (req, res) => {
   res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
   res.json({ message: "Logged out successfully" });
