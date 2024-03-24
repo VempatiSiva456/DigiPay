@@ -1,14 +1,8 @@
 const express = require("express");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-require("dotenv").config;
-const { ethers, JsonRpcProvider } = require("ethers");
 const router = express.Router();
 const auth = require("../middleware/authMiddleware");
-const fs = require("fs");
-
-const abiData = JSON.parse(fs.readFileSync("./abi.json", "utf8"));
-const abi = abiData.abi;
 
 router.post("/register", async (req, res) => {
   try {
@@ -46,7 +40,7 @@ router.post("/login", async (req, res) => {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.send({ user });
+    res.status(201).send({ user });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -68,12 +62,16 @@ router.get("/verifySession", (req, res) => {
 
 router.get("/current-user", auth, async (req, res) => {
   const user = await User.findById(req.user._id);
-  res.status(201).json({ name: user.name, email: user.email });
+  if (user) {
+    res.status(201).json({ name: user.name, email: user.email });
+  } else {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.post("/logout", auth, (req, res) => {
   res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
-  res.json({ message: "Logged out successfully" });
+  res.status(201).json({ message: "Logged out successfully" });
 });
 
 module.exports = router;

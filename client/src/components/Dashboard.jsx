@@ -6,6 +6,7 @@ import {
   IconButton,
   Box,
   Container,
+  Button,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/AuthContext";
@@ -19,51 +20,100 @@ const Dashboard = () => {
   const { logout } = useAuth();
 
   const [walletConnected, setWalletConnected] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   const handleWalletStatusChange = (isConnected) => {
     setWalletConnected(isConnected);
   };
+
+  const handleTransactionComplete = () => {
+    setRefreshTrigger((prev) => !prev);
+  };
+
+  const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
   const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
 
   useEffect(() => {
-    const fetchAbi = async () => {
-      try {
-        const abi = abiData.abi;
-        setAbi(abi);
-      } catch (error) {
-        console.error("Error fetching ABI:", error);
-      }
-    };
-
-    fetchAbi();
-
-    const fetchUserName = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:5000/api/auth/current-user",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
+    if (isMetaMaskInstalled) {
+      const fetchAbi = async () => {
+        try {
+          const abi = abiData.abi;
+          setAbi(abi);
+        } catch (error) {
+          console.error("Error fetching ABI:", error);
         }
+      };
 
-        const data = await response.json();
-        setUserName(data.name);
-      } catch (error) {
-        console.error("Error fetching user name:", error);
-      }
-    };
+      fetchAbi();
 
-    fetchUserName();
+      const fetchUserName = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:5000/api/auth/current-user",
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+
+          const data = await response.json();
+          setUserName(data.name);
+        } catch (error) {
+          console.error("Error fetching user name:", error);
+        }
+      };
+
+      fetchUserName();
+    }
   }, [setAbi, setUserName]);
 
+  if (!isMetaMaskInstalled) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        sx={{
+          backgroundColor: "background.default",
+          p: 3,
+        }}
+      >
+        <Typography
+          variant="h5"
+          align="center"
+          gutterBottom
+          sx={{
+            mb: 4,
+            color: "text.primary",
+            maxWidth: "600px",
+          }}
+        >
+          Install Metamask to Proceed!
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          href="https://metamask.io/download.html"
+          target="_blank"
+          sx={{
+            px: 5,
+            py: 1,
+          }}
+        >
+          Install MetaMask
+        </Button>
+      </Box>
+    );
+  }
   return (
     <>
       <AppBar position="static">
@@ -79,7 +129,10 @@ const Dashboard = () => {
       <Container maxWidth="lg">
         <Box sx={{ my: 4, alignItems: "center" }}>
           <Typography variant="body1" gutterBottom></Typography>
-          <ConnectWallet onStatusChange={handleWalletStatusChange} />
+          <ConnectWallet
+            onStatusChange={handleWalletStatusChange}
+            refreshTrigger={refreshTrigger}
+          />
         </Box>
         {walletConnected && (
           <Box>
@@ -105,12 +158,16 @@ const Dashboard = () => {
                 Transaction Form
               </Typography>
             </Box>
-            <TransactionForm contractAddress={contractAddress} abi={abi}/>
+            <TransactionForm
+              contractAddress={contractAddress}
+              abi={abi}
+              onTransactionComplete={handleTransactionComplete}
+            />
           </Box>
         )}
         <Box>
           <Box mt={3}>
-            <ShowHistory />
+            <ShowHistory refreshTrigger={refreshTrigger} />
           </Box>
         </Box>
       </Container>

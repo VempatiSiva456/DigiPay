@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useInsertionEffect } from "react";
 import { ethers, formatUnits } from "ethers";
 import {
   Button,
@@ -11,16 +11,52 @@ import {
   Paper,
 } from "@mui/material";
 
-const ConnectWallet = ({ onStatusChange }) => {
+const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
+  const [metamask, setMetamask] = useState(false);
 
-  const checkIfWalletIsConnected = async () => {
+  useEffect(() => {
+    const checkIfWalletIsConnected = async () => {
+      if (window.ethereum) {
+        try {
+          setMetamask(true);
+          const accounts = await window.ethereum.request({
+            method: "eth_accounts",
+          });
+          if (accounts.length > 0) {
+            setCurrentAccount(accounts[0]);
+            await getBalance(accounts[0]);
+            onStatusChange(true);
+          } else {
+            setCurrentAccount("");
+            setCurrentBalance("");
+            onStatusChange(false);
+          }
+        } catch (error) {
+          console.error("Error checking for connected account:", error);
+        }
+      } else {
+        setMetamask(false);
+        alert(
+          "MetaMask is not installed. Please consider installing it: https://metamask.io/download.html"
+        );
+      }
+    };
+
+    checkIfWalletIsConnected();
+  }, [onStatusChange]);
+
+  const getBalance = async (account) => {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const balance = await provider.getBalance(account);
+    setCurrentBalance(formatUnits(balance));
+  };
+
+  useEffect(() => {
     if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_accounts",
-        });
+      setMetamask(true);
+      window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
           await getBalance(accounts[0]);
@@ -30,40 +66,22 @@ const ConnectWallet = ({ onStatusChange }) => {
           setCurrentBalance("");
           onStatusChange(false);
         }
-      } catch (error) {
-        console.error("Error checking for connected account:", error);
-      }
+      });
     } else {
-      alert(
-        "MetaMask is not installed. Please consider installing it: https://metamask.io/download.html"
-      );
+      setMetamask(false);
     }
-  };
-
-  const getBalance = async (account) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const balance = await provider.getBalance(account);
-    setCurrentBalance(formatUnits(balance));
-  };
+  }, [onStatusChange]);
 
   useEffect(() => {
-    checkIfWalletIsConnected();
-    window.ethereum.on("accountsChanged", (accounts) => {
-      if (accounts.length > 0) {
-        setCurrentAccount(accounts[0]);
-        getBalance(accounts[0]);
-        onStatusChange(true);
-      } else {
-        setCurrentAccount("");
-        setCurrentBalance("");
-        onStatusChange(false);
-      }
-    });
-  }, []);
+    if (currentAccount) {
+      getBalance(currentAccount);
+    }
+  }, [refreshTrigger, currentAccount]);
 
   const connectWalletHandler = async () => {
     if (window.ethereum) {
       try {
+        setMetamask(true);
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
@@ -76,6 +94,7 @@ const ConnectWallet = ({ onStatusChange }) => {
         console.error("Error connecting to MetaMask", error);
       }
     } else {
+      setMetamask(false);
       alert(
         "MetaMask is not installed. Please consider installing it: https://metamask.io/download.html"
       );

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import abiData from "../abi.json";
 
-const ShowHistory = () => {
+const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =
     "https://polygon-mumbai.infura.io/v3/52bcd780570e4378afca6c432b67ce94";
   const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
@@ -81,8 +81,7 @@ const ShowHistory = () => {
 
       fetchTransactions();
     }
-  }, [userEmail, contractAddress, abi, providerUrl]); // Added userEmail as a dependency
-
+  }, [userEmail, contractAddress, abi, providerUrl, refreshTrigger]);
   if (isLoading) return <p>Loading transactions...</p>;
 
   return (
@@ -118,8 +117,7 @@ const ShowHistory = () => {
               <TableCell>Sender</TableCell>
               <TableCell>Recipient</TableCell>
               <TableCell>Note</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell align="right">Amount (ETH)</TableCell>
+              <TableCell align="right">Amount ($)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -140,7 +138,6 @@ const ShowHistory = () => {
                 <TableCell>{tx.sender}</TableCell>
                 <TableCell>{tx.recipient}</TableCell>
                 <TableCell>{tx.note}</TableCell>
-                <TableCell>{tx.email}</TableCell>
                 <TableCell align="right">{tx.amount}</TableCell>
               </TableRow>
             ))}

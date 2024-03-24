@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Button, TextField, Box } from "@mui/material";
+import { Button, TextField, Box, CircularProgress } from "@mui/material";
 
-const TransactionForm = ({ contractAddress, abi }) => {
+const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-
     const fetchUserEmail = async () => {
       try {
         const response = await fetch(
@@ -34,17 +34,18 @@ const TransactionForm = ({ contractAddress, abi }) => {
     fetchUserEmail();
   }, [setUserEmail]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!window.ethereum) {
       alert("Please install MetaMask to use this feature.");
+      setIsLoading(false);
       return;
     }
 
     try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       console.log(contractAddress, abi, signer);
@@ -59,12 +60,15 @@ const TransactionForm = ({ contractAddress, abi }) => {
       const txReceipt = await txResponse.wait();
       console.log("Transaction confirmed:", txReceipt);
 
-      setRecipient("");
-      setAmount("");
-      setNote("");
+      onTransactionComplete();
     } catch (error) {
       console.error("Transaction failed:", error);
       alert("Transaction failed: " + error.message);
+    } finally {
+      setIsLoading(false);
+      setRecipient("");
+      setAmount("");
+      setNote("");
     }
   };
 
@@ -107,13 +111,12 @@ const TransactionForm = ({ contractAddress, abi }) => {
         sx={{
           mb: 2,
           margin: "20px",
-          "&:hover": {
-            backgroundColor: "#648dae",
-          },
+          "&:hover": { backgroundColor: "#648dae" },
           width: "60%",
         }}
+        disabled={isLoading}
       >
-        Send
+        {isLoading ? <CircularProgress size={24} /> : "Send"}
       </Button>
     </Box>
   );
