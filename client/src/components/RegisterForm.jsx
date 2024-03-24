@@ -24,6 +24,8 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
+const apiUrl = process.env.REACT_APP_API_URL || '/api';
+
 export default function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = React.useState({
@@ -59,7 +61,7 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch(apiUrl+"/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

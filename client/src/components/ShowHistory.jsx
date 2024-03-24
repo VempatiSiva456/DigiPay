@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import abiData from "../abi.json";
 
+const apiUrl = process.env.REACT_APP_API_URL || '/api';
+
 const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =
     "https://polygon-mumbai.infura.io/v3/52bcd780570e4378afca6c432b67ce94";
@@ -28,7 +30,7 @@ const ShowHistory = ({ refreshTrigger }) => {
     const fetchUserEmail = async () => {
       try {
         const response = await fetch(
-          "/api/auth/current-user",
+          apiUrl+"/auth/current-user",
           {
             method: "GET",
             credentials: "include",

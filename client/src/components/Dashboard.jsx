@@ -15,6 +15,7 @@ import TransactionForm from "./TransactionForm";
 import abiData from "../abi.json";
 import ShowHistory from "./ShowHistory";
 import Footer from "./Footer";
+const apiUrl = process.env.REACT_APP_API_URL || '/api';
 
 const Dashboard = () => {
   const { logout } = useAuth();
@@ -52,7 +53,7 @@ const Dashboard = () => {
       const fetchUserName = async () => {
         try {
           const response = await fetch(
-            "/api/auth/current-user",
+            apiUrl+"/auth/current-user",
             {
               method: "GET",
               credentials: "include",

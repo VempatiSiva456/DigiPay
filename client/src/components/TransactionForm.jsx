@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { Button, TextField, Box, CircularProgress } from "@mui/material";
+const apiUrl = process.env.REACT_APP_API_URL || '/api';
 
 const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
   const [recipient, setRecipient] = useState("");
@@ -13,7 +14,7 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
     const fetchUserEmail = async () => {
       try {
         const response = await fetch(
-          "/api/auth/current-user",
+          apiUrl+"/auth/current-user",
           {
             method: "GET",
             credentials: "include",
