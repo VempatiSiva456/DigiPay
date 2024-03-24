@@ -13,7 +13,7 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
     const fetchUserEmail = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/auth/current-user",
+          "/api/auth/current-user",
           {
             method: "GET",
             credentials: "include",
