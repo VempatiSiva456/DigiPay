@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -24,7 +24,7 @@ const Dashboard = () => {
     setWalletConnected(isConnected);
   };
 
-  const contractAddress = "0x919108f9Ce5F63F3e2B1718204A820a7D8e467Bd";
+  const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
 
@@ -42,13 +42,16 @@ const Dashboard = () => {
 
     const fetchUserName = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/user-name', {
-          method: 'GET',
-          credentials: "include"
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/auth/current-user",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+          throw new Error("Failed to fetch user data");
         }
 
         const data = await response.json();
@@ -61,13 +64,12 @@ const Dashboard = () => {
     fetchUserName();
   }, [setAbi, setUserName]);
 
-
   return (
     <>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {userName ? `${userName}'s Dashboard` : 'Dashboard'}
+            {userName ? `${userName}'s Dashboard` : "Dashboard"}
           </Typography>
           <IconButton color="inherit" onClick={logout}>
             <LogoutIcon />
@@ -75,33 +77,40 @@ const Dashboard = () => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg">
-        <Box sx={{ my: 4, alignItems: 'center' }}>
+        <Box sx={{ my: 4, alignItems: "center" }}>
           <Typography variant="body1" gutterBottom></Typography>
           <ConnectWallet onStatusChange={handleWalletStatusChange} />
         </Box>
         {walletConnected && (
-        <Box>
-          <Box mt={3} sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '10px', 
-              border: '1px solid', 
-              borderColor: 'grey.300',
-              borderRadius: '4px', 
-              backgroundColor: 'white', 
-              boxShadow: '0px 2px 4px rgba(0,0,0,0.1)', 
-              margin: '20px 0', 
-            }}>
-              <Typography variant="h5" component="h2" sx={{ textAlign: 'center', color: 'grey.800' }}>
+          <Box>
+            <Box
+              mt={3}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "10px",
+                border: "1px solid",
+                borderColor: "grey.300",
+                borderRadius: "4px",
+                backgroundColor: "white",
+                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                margin: "20px 0",
+              }}
+            >
+              <Typography
+                variant="h5"
+                component="h2"
+                sx={{ textAlign: "center", color: "grey.800" }}
+              >
                 Transaction Form
               </Typography>
             </Box>
-            <TransactionForm />
-        </Box>
+            <TransactionForm contractAddress={contractAddress} abi={abi}/>
+          </Box>
         )}
         <Box>
           <Box mt={3}>
-            <ShowHistory/>
+            <ShowHistory />
           </Box>
         </Box>
       </Container>

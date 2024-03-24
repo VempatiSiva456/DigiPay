@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { ethers, formatUnits } from "ethers";
-import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from "@mui/material";
+import {
+  Button,
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 const ConnectWallet = ({ onStatusChange }) => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -9,7 +19,9 @@ const ConnectWallet = ({ onStatusChange }) => {
   const checkIfWalletIsConnected = async () => {
     if (window.ethereum) {
       try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
           await getBalance(accounts[0]);
@@ -23,7 +35,9 @@ const ConnectWallet = ({ onStatusChange }) => {
         console.error("Error checking for connected account:", error);
       }
     } else {
-      alert("MetaMask is not installed. Please consider installing it: https://metamask.io/download.html");
+      alert(
+        "MetaMask is not installed. Please consider installing it: https://metamask.io/download.html"
+      );
     }
   };
 
@@ -35,7 +49,7 @@ const ConnectWallet = ({ onStatusChange }) => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-    window.ethereum.on('accountsChanged', (accounts) => {
+    window.ethereum.on("accountsChanged", (accounts) => {
       if (accounts.length > 0) {
         setCurrentAccount(accounts[0]);
         getBalance(accounts[0]);
@@ -63,41 +77,58 @@ const ConnectWallet = ({ onStatusChange }) => {
         console.error("Error connecting to MetaMask", error);
       }
     } else {
-      alert("MetaMask is not installed. Please consider installing it: https://metamask.io/download.html");
+      alert(
+        "MetaMask is not installed. Please consider installing it: https://metamask.io/download.html"
+      );
     }
   };
 
   return (
-    <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-    {!currentAccount ? (
-      <Button variant="contained" onClick={connectWalletHandler} sx={{ mb: 2 }}>
-        Connect Wallet
-      </Button>
-    ) : (
-      <TableContainer component={Paper} sx={{ maxWidth: 650, margin: 'auto', mt: 2 }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableBody>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                Connected Account:
-              </TableCell>
-              <TableCell align="right">{currentAccount}</TableCell>
-            </TableRow>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                Balance:
-              </TableCell>
-              <TableCell align="right">$ {currentBalance}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    )}
-  </Box>
+    <Box
+      sx={{
+        mt: 3,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      {!currentAccount ? (
+        <Button
+          variant="contained"
+          onClick={connectWalletHandler}
+          sx={{ mb: 2 }}
+        >
+          Connect Wallet
+        </Button>
+      ) : (
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: 650, margin: "auto", mt: 2 }}
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableBody>
+              <TableRow
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  Connected Account:
+                </TableCell>
+                <TableCell align="right">{currentAccount}</TableCell>
+              </TableRow>
+              <TableRow
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  Balance:
+                </TableCell>
+                <TableCell align="right">$ {currentBalance}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </Box>
   );
 };
 

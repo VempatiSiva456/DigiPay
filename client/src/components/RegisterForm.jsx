@@ -1,9 +1,20 @@
-import React, {useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container, Alert } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  Alert,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useAuth } from "../contexts/AuthContext";
 
 const defaultTheme = createTheme();
 
@@ -16,20 +27,20 @@ const validateEmail = (email) => {
 export default function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
-  const [errorMessage, setErrorMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState("");
   const [isEmailValid, setIsEmailValid] = React.useState(true);
 
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isLoggedIn, navigate]);
 
@@ -37,10 +48,10 @@ export default function SignUp() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
 
-    if (name === 'email') {
+    if (name === "email") {
       setIsEmailValid(validateEmail(value));
     }
   };
@@ -48,32 +59,31 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch('http://localhost:5000/api/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: formData.name,
-                email: formData.email,
-                password: formData.password
-            })
-        });
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to register');
-        }
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to register");
+      }
 
-        console.log('Registration successful', data);
-        navigate('/login');
+      console.log("Registration successful", data);
+      navigate("/login");
     } catch (error) {
-        console.error('Registration error:', error.message);
-        setErrorMessage(error.message);
+      console.error("Registration error:", error.message);
+      setErrorMessage(error.message);
     }
-};
-
+  };
 
   const isFormValid = () => {
     return (
@@ -92,23 +102,28 @@ export default function SignUp() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
           {errorMessage && (
-            <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
               {errorMessage}
             </Alert>
           )}
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -134,7 +149,9 @@ export default function SignUp() {
                   value={formData.email}
                   onChange={handleChange}
                   error={!isEmailValid}
-                  helperText={!isEmailValid ? "Please enter a valid email." : ""}
+                  helperText={
+                    !isEmailValid ? "Please enter a valid email." : ""
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -162,7 +179,9 @@ export default function SignUp() {
                   onChange={handleChange}
                   error={formData.password !== formData.confirmPassword}
                   helperText={
-                    formData.password !== formData.confirmPassword ? "Passwords do not match." : ""
+                    formData.password !== formData.confirmPassword
+                      ? "Passwords do not match."
+                      : ""
                   }
                 />
               </Grid>
@@ -178,15 +197,18 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2
-                ">
-                Already have an account? Sign in
-              </Link>
+                <Link
+                  href="/login"
+                  variant="body2
+                "
+                >
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-    </Container>
-  </ThemeProvider>
-);
+      </Container>
+    </ThemeProvider>
+  );
 }

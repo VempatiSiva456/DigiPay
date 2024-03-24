@@ -14,15 +14,14 @@ import {
 } from "@mui/material";
 import abiData from "../abi.json";
 
-// Component to show transaction history
 const ShowHistory = () => {
   const providerUrl =
     "https://polygon-mumbai.infura.io/v3/52bcd780570e4378afca6c432b67ce94";
-  const contractAddress = "0x18f46afb2Cb1571Ee8dBFc2b751f6604218c8e28";
+  const contractAddress = "0x46eC90b5243dafbdbA6062b17E5b96a9B2b8C102";
   const abi = abiData.abi;
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [balance, setBalance] = useState(null);
+  const [contractBalance, setContractBalance] = useState(null);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -40,9 +39,8 @@ const ShowHistory = () => {
         setTransactions(transactionsData);
 
         const curr_balance = await contract.getBalance();
-        setBalance(formatEther(curr_balance));
-        // console.log("Remaining Balance: ", balance);
-
+        setContractBalance(formatEther(curr_balance));
+        console.log("Balance in Contract: ", contractBalance);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       } finally {
@@ -96,7 +94,11 @@ const ShowHistory = () => {
                     {index + 1}
                   </TableCell>
                   <TableCell>
-                    <Link href={`https://mumbai.polygonscan.com/tx/${tx.hash}`} target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href={`https://mumbai.polygonscan.com/tx/${tx.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {tx.hash}
                     </Link>
                   </TableCell>
@@ -114,18 +116,25 @@ const ShowHistory = () => {
         </Table>
       </TableContainer>
       {transactions.length > 0 && (
-        <Box mt={3} sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '10px', 
-          border: '1px solid', 
-          borderColor: 'grey.300',
-          borderRadius: '4px', 
-          backgroundColor: 'white', 
-          boxShadow: '0px 2px 4px rgba(0,0,0,0.1)', 
-          margin: '20px 0', 
-        }}>
-          <Typography variant="h5" component="h2" sx={{ textAlign: 'center', color: 'grey.800' }}>
+        <Box
+          mt={3}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "10px",
+            border: "1px solid",
+            borderColor: "grey.300",
+            borderRadius: "4px",
+            backgroundColor: "white",
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+            margin: "20px 0",
+          }}
+        >
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{ textAlign: "center", color: "grey.800" }}
+          >
             Total No. of Transactions: {transactions.length}
           </Typography>
         </Box>
