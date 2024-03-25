@@ -56,3 +56,13 @@ This Web Application is currently limited to interacting with MATIC because the 
 For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using now in this application with a contract deployed on the Mumbai network. These tokens are also limited to get sufficient gas amount; if our account already has that much amount, then it won’t give more.
 
 
+## Version 2:
+
+### Integration with Superfluid is done!.
+
+- You can use the same link: [https://digipay-app.onrender.com](https://digipay-app.onrender.com)
+
+- Now users can create streams, update streams, delete streams
+
+- **Note to Users:** For streaming transactions in Superfluid, ensure you use Super Tokens, typically ending with 'x' (e.g., fDAIx). These tokens are "wrapped" versions of regular tokens, designed for fluid, continuous transactions. To convert regular tokens into Super Tokens or vice versa, visit [Superfluid App](https://app.superfluid.finance/), where you can easily wrap and unwrap tokens for use in streams. Always confirm you're interacting with the correct token for seamless transactions.
+
