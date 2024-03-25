@@ -54,7 +54,7 @@ const Dashboard = () => {
       const fetchUserName = async () => {
         try {
           const response = await fetch(
-            apiUrl+"/auth/current-user",
+            "/api/auth/current-user",
             {
               method: "GET",
               credentials: "include",
