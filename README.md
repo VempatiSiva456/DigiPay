@@ -32,3 +32,27 @@ This Web Application is currently limited to interacting with MATIC because the 
 
 [https://digipay-app.onrender.com](https://digipay-app.onrender.com)
 
+## Network Deployment Summary
+
+- **Mumbai**:
+  - TransactionRecorder deployed to: `contract_address`
+
+- **Polygon Mainnet**:
+  - Insufficient funds in my wallet account provided to deploy.
+
+- **Ethereum Mainnet**:
+  - Insufficient funds in my wallet account provided to deploy.
+
+- **Goerli Testnet**:
+  - Insufficient funds in my wallet account provided to deploy.
+  - Note: To receive Goerli ETH, your wallet must have a minimum balance of 0.001 ETH on mainnet. Please add ETH to your wallet and try again.
+
+- **Sepolia Testnet**:
+  - Taking so much time and giving network errors while adding Sepolia ETH to wallet (not added). So, while deploying the contract for Sepolia RPC, it showed insufficient funds.
+
+- **Linea Mainnet**:
+  - Insufficient funds in my wallet account provided to deploy.
+
+For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using now in this application with a contract deployed on the Mumbai network. These tokens are also limited to get sufficient gas amount; if our account already has that much amount, then it won’t give more.
+
+

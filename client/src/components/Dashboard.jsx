@@ -7,6 +7,7 @@ import {
   Box,
   Container,
   Button,
+  Alert,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/AuthContext";
@@ -15,7 +16,7 @@ import TransactionForm from "./TransactionForm";
 import abiData from "../abi.json";
 import ShowHistory from "./ShowHistory";
 import Footer from "./Footer";
-const apiUrl = process.env.REACT_APP_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 const Dashboard = () => {
   const { logout } = useAuth();
@@ -119,7 +120,7 @@ const Dashboard = () => {
     <>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             {userName ? `${userName}'s Dashboard` : "Dashboard"}
           </Typography>
           <IconButton color="inherit" onClick={logout}>
@@ -128,49 +129,30 @@ const Dashboard = () => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg">
-        <Box sx={{ my: 4, alignItems: "center" }}>
-          <Typography variant="body1" gutterBottom></Typography>
-          <ConnectWallet
-            onStatusChange={handleWalletStatusChange}
-            refreshTrigger={refreshTrigger}
-          />
+        <Box sx={{ my: 4, textAlign: "center" }}>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            <Typography variant="body2">
+              <b>Note to Users:</b> The DigiPay application operates on the Polygon Mumbai test network, requiring MATIC
+              tokens for transactions. Ensure your wallet is connected to the Mumbai network and has enough MATIC to
+              cover transaction fees. If not, you can get free Tokens from{" "}
+              <Button href="https://faucet.polygon.technology/" target="_blank" color="primary">
+                Polygon Faucet
+              </Button>{" "}
+              and select network as Polygon PoS (Mumbai).
+            </Typography>
+          </Alert>
+          <ConnectWallet onStatusChange={setWalletConnected} refreshTrigger={refreshTrigger} />
         </Box>
         {walletConnected && (
-          <Box>
-            <Box
-              mt={3}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "10px",
-                border: "1px solid",
-                borderColor: "grey.300",
-                borderRadius: "4px",
-                backgroundColor: "white",
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                margin: "20px 0",
-              }}
-            >
-              <Typography
-                variant="h5"
-                component="h2"
-                sx={{ textAlign: "center", color: "grey.800" }}
-              >
-                Transaction Form
-              </Typography>
-            </Box>
+          <>
             <TransactionForm
               contractAddress={contractAddress}
               abi={abi}
               onTransactionComplete={handleTransactionComplete}
             />
-          </Box>
-        )}
-        <Box>
-          <Box mt={3}>
             <ShowHistory refreshTrigger={refreshTrigger} />
-          </Box>
-        </Box>
+          </>
+        )}
       </Container>
       <Footer />
     </>

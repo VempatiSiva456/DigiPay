@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import abiData from "../abi.json";
 
-const apiUrl = process.env.REACT_APP_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =

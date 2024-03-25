@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { Button, TextField, Box, CircularProgress } from "@mui/material";
-const apiUrl = process.env.REACT_APP_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
   const [recipient, setRecipient] = useState("");

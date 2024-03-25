@@ -24,7 +24,7 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
-const apiUrl = process.env.REACT_APP_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
 export default function SignUp() {
   const navigate = useNavigate();
