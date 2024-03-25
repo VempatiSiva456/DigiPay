@@ -1,4 +1,5 @@
 # Digipay
+
 ## A Blockchain-Based Wallet Website
 
 This project aims to introduce users to blockchain and Web3 functionalities by integrating with MetaMask, allowing transactions via a custom website wallet, and utilizing Superfluid for stream transactions. It features a comprehensive user system with registration and login capabilities, transaction history, and the generation and use of test tokens for transactions.
@@ -35,34 +36,35 @@ This Web Application is currently limited to interacting with MATIC because the 
 ## Network Deployment Summary
 
 - **Mumbai**:
+
   - TransactionRecorder deployed to: `contract_address`
-
 - **Polygon Mainnet**:
-  - Insufficient funds in my wallet account provided to deploy.
 
+  - Insufficient funds in my wallet account provided to deploy.
 - **Ethereum Mainnet**:
-  - Insufficient funds in my wallet account provided to deploy.
 
+  - Insufficient funds in my wallet account provided to deploy.
 - **Goerli Testnet**:
+
   - Insufficient funds in my wallet account provided to deploy.
   - Note: To receive Goerli ETH, your wallet must have a minimum balance of 0.001 ETH on mainnet. Please add ETH to your wallet and try again.
-
 - **Sepolia Testnet**:
-  - Taking so much time and giving network errors while adding Sepolia ETH to wallet (not added). So, while deploying the contract for Sepolia RPC, it showed insufficient funds.
 
+  - Taking so much time and giving network errors while adding Sepolia ETH to wallet (not added). So, while deploying the contract for Sepolia RPC, it showed insufficient funds.
 - **Linea Mainnet**:
+
   - Insufficient funds in my wallet account provided to deploy.
 
 For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using now in this application with a contract deployed on the Mumbai network. These tokens are also limited to get sufficient gas amount; if our account already has that much amount, then it won’t give more.
-
 
 ## Version 2:
 
 ### Integration with Superfluid is done!.
 
 - You can use the same link: [https://digipay-app.onrender.com](https://digipay-app.onrender.com)
-
 - Now users can create streams, update streams, delete streams
-
 - **Note to Users:** For streaming transactions in Superfluid, ensure you use Super Tokens, typically ending with 'x' (e.g., fDAIx). These tokens are "wrapped" versions of regular tokens, designed for fluid, continuous transactions. To convert regular tokens into Super Tokens or vice versa, visit [Superfluid App](https://app.superfluid.finance/), where you can easily wrap and unwrap tokens for use in streams. Always confirm you're interacting with the correct token for seamless transactions.
 
+### Demo Video Link (v2):
+
+- [Click Here](https://drive.google.com/file/d/1Qd6dz5NZS1ayRQt6LF4xotTaXZbnT_e8/view?usp=drivesdk)
