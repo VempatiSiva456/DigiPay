@@ -23,3 +23,12 @@ This project aims to introduce users to blockchain and Web3 functionalities by i
 - **Database**: MongoDB or MySQL
 - **Blockchain Technologies**: MetaMask, Superfluid
 - **Testing**: Hardhat or Truffle for smart contract testing
+
+## Version 1:
+
+This Web Application is currently limited to interacting with MATIC because the contract is designed for operations with the native token, and the RPC URL connects to the Mumbai network where MATIC is the native currency.
+
+## Deployed in render
+
+[https://digipay-app.onrender.com](https://digipay-app.onrender.com)
+
