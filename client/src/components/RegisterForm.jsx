@@ -24,7 +24,7 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(apiUrl+"/auth/register", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

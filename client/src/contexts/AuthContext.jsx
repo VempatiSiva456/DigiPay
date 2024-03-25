@@ -1,20 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
 
   const checkSession = async () => {
     try {
-      const response = await fetch(apiUrl+"/auth/verifySession",
-        {
-          credentials: "include",
-        }
-      );
+      const response = await fetch("/api/auth/verifySession", {
+        credentials: "include",
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -28,12 +26,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
   useEffect(() => {
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(storedIsLoggedIn);
     checkSession();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("isLoggedIn", isLoggedIn);
+  }, [isLoggedIn]);
+
   const login = async (email, password) => {
     try {
-      const response = await fetch(apiUrl+"/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +58,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const response = await fetch(apiUrl+"/auth/logout", {
+      const response = await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });

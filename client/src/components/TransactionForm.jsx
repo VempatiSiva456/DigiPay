@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Button, TextField, Box, CircularProgress } from "@mui/material";
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+import { Button, TextField, Box, CircularProgress, Alert } from "@mui/material";
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
   const [recipient, setRecipient] = useState("");
@@ -9,17 +9,17 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
   const [note, setNote] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch(
-          apiUrl+"/auth/current-user",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch("/api/auth/current-user", {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -47,24 +47,24 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
 
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       console.log(contractAddress, abi, signer);
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
       console.log(contract);
 
       const txResponse = await contract.sendETH(recipient, note, userEmail, {
-        value: ethers.parseEther(amount),
+        value: ethers.utils.parseEther(amount),
       });
       console.log("Transaction sent. Waiting for confirmation...");
       const txReceipt = await txResponse.wait();
       console.log("Transaction confirmed:", txReceipt);
-
+      setSuccessMessage("Transaction Done!");
       onTransactionComplete();
     } catch (error) {
       console.error("Transaction failed:", error);
-      alert("Transaction failed: " + error.message);
+      setErrorMessage("Transaction failed: " + error.message);
     } finally {
       setIsLoading(false);
       setRecipient("");
@@ -85,6 +85,16 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
         marginTop: "1%",
       }}
     >
+      {successMessage && (
+        <Alert severity="success" sx={{ width: "50%", mb: 2 }}>
+          {successMessage}
+        </Alert>
+      )}
+      {errorMessage && (
+        <Alert severity="error" sx={{ width: "50%", mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
       <TextField
         label="Recipient Address"
         value={recipient}

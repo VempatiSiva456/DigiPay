@@ -24,10 +24,38 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/superfluid" element={<ProtectedRoute><Superfluid /></ProtectedRoute>} />
-        <Route path="/superfluid/createflow" element={<ProtectedRoute><CreateFlow /></ProtectedRoute>} />
-        <Route path="/superfluid/updateflow" element={<ProtectedRoute><UpdateFlow /></ProtectedRoute>} />
-        <Route path="/superfluid/deleteflow" element={<ProtectedRoute><DeleteFlow /></ProtectedRoute>} />
+        <Route
+          path="/superfluid"
+          element={
+            <ProtectedRoute>
+              <Superfluid />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superfluid/createflow"
+          element={
+            <ProtectedRoute>
+              <CreateFlow />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superfluid/updateflow"
+          element={
+            <ProtectedRoute>
+              <UpdateFlow />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superfluid/deleteflow"
+          element={
+            <ProtectedRoute>
+              <DeleteFlow />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

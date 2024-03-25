@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers} from "ethers";
+import { ethers } from "ethers";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import abiData from "../abi.json";
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =
@@ -29,13 +29,10 @@ const ShowHistory = ({ refreshTrigger }) => {
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch(
-          apiUrl+"/auth/current-user",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch("/api/auth/current-user", {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -45,8 +42,7 @@ const ShowHistory = ({ refreshTrigger }) => {
         setUserEmail(data.email);
       } catch (error) {
         console.error("Error fetching user email:", error);
-      }
-      finally {
+      } finally {
         setIsLoading(false);
       }
     };

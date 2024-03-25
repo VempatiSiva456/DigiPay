@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useInsertionEffect } from "react";
-import { ethers} from "ethers";
+import { ethers } from "ethers";
 import {
   Button,
   Box,

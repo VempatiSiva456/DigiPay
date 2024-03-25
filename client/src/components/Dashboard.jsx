@@ -57,7 +57,7 @@ const Dashboard = () => {
 
       const fetchUserName = async () => {
         try {
-          const response = await fetch(apiUrl + "/auth/current-user", {
+          const response = await fetch("/api/auth/current-user", {
             method: "GET",
             credentials: "include",
           });
@@ -79,6 +79,17 @@ const Dashboard = () => {
 
   if (!isMetaMaskInstalled) {
     return (
+      <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            {userName ? `${userName}'s Dashboard` : "Dashboard"}
+          </Typography>
+          <IconButton color="inherit" onClick={logout}>
+            <LogoutIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
       <Box
         display="flex"
         flexDirection="column"
@@ -115,6 +126,7 @@ const Dashboard = () => {
           Install MetaMask
         </Button>
       </Box>
+      </>
     );
   }
   return (
