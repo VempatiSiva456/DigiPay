@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useInsertionEffect } from "react";
-import { ethers, formatUnits } from "ethers";
+import { ethers} from "ethers";
 import {
   Button,
   Box,
@@ -48,9 +48,9 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
   }, [onStatusChange]);
 
   const getBalance = async (account) => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const balance = await provider.getBalance(account);
-    setCurrentBalance(formatUnits(balance));
+    setCurrentBalance(ethers.utils.formatEther(balance));
   };
 
   useEffect(() => {

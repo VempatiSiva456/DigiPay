@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -8,6 +9,8 @@ import {
   Container,
   Button,
   Alert,
+  Card,
+  CardContent,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../contexts/AuthContext";
@@ -16,10 +19,11 @@ import TransactionForm from "./TransactionForm";
 import abiData from "../abi.json";
 import ShowHistory from "./ShowHistory";
 import Footer from "./Footer";
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 const Dashboard = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const [walletConnected, setWalletConnected] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
@@ -53,13 +57,10 @@ const Dashboard = () => {
 
       const fetchUserName = async () => {
         try {
-          const response = await fetch(
-            "/api/auth/current-user",
-            {
-              method: "GET",
-              credentials: "include",
-            }
-          );
+          const response = await fetch(apiUrl + "/auth/current-user", {
+            method: "GET",
+            credentials: "include",
+          });
 
           if (!response.ok) {
             throw new Error("Failed to fetch user data");
@@ -132,16 +133,25 @@ const Dashboard = () => {
         <Box sx={{ my: 4, textAlign: "center" }}>
           <Alert severity="info" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              <b>Note to Users:</b> The DigiPay application operates on the Polygon Mumbai test network, requiring MATIC
-              tokens for transactions. Ensure your wallet is connected to the Mumbai network and has enough MATIC to
-              cover transaction fees. If not, you can get free Tokens from{" "}
-              <Button href="https://faucet.polygon.technology/" target="_blank" color="primary">
+              <b>Note to Users:</b> The DigiPay application operates on the
+              Polygon Mumbai test network, requiring MATIC tokens for
+              transactions. Ensure your wallet is connected to the Mumbai
+              network and has enough MATIC to cover transaction fees. If not,
+              you can get free Tokens from{" "}
+              <Button
+                href="https://faucet.polygon.technology/"
+                target="_blank"
+                color="primary"
+              >
                 Polygon Faucet
               </Button>{" "}
               and select network as Polygon PoS (Mumbai).
             </Typography>
           </Alert>
-          <ConnectWallet onStatusChange={setWalletConnected} refreshTrigger={refreshTrigger} />
+          <ConnectWallet
+            onStatusChange={setWalletConnected}
+            refreshTrigger={refreshTrigger}
+          />
         </Box>
         {walletConnected && (
           <>
@@ -150,9 +160,34 @@ const Dashboard = () => {
               abi={abi}
               onTransactionComplete={handleTransactionComplete}
             />
-            <ShowHistory refreshTrigger={refreshTrigger} />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                my: 2,
+              }}
+            >
+              <Card variant="outlined" sx={{ minWidth: 275 }}>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/superfluid")}
+                    sx={{ mt: 1, mb: 1 }}
+                  >
+                    Pay with Superfluid
+                  </Button>
+                </CardContent>
+              </Card>
+            </Box>
           </>
         )}
+        <ShowHistory refreshTrigger={refreshTrigger} />
       </Container>
       <Footer />
     </>

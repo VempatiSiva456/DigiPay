@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers, JsonRpcProvider, formatEther } from "ethers";
+import { ethers} from "ethers";
 import {
   Table,
   TableBody,
@@ -30,7 +30,7 @@ const ShowHistory = ({ refreshTrigger }) => {
     const fetchUserEmail = async () => {
       try {
         const response = await fetch(
-          "/api/auth/current-user",
+          apiUrl+"/auth/current-user",
           {
             method: "GET",
             credentials: "include",
@@ -58,7 +58,7 @@ const ShowHistory = ({ refreshTrigger }) => {
     if (userEmail) {
       const fetchTransactions = async () => {
         try {
-          const provider = new JsonRpcProvider(providerUrl);
+          const provider = new ethers.providers.JsonRpcProvider(providerUrl);
           const contract = new ethers.Contract(contractAddress, abi, provider);
 
           const events = await contract.queryFilter("*");
@@ -70,7 +70,7 @@ const ShowHistory = ({ refreshTrigger }) => {
             blockNumber: event.blockNumber,
             sender: event.args[0],
             recipient: event.args[1],
-            amount: formatEther(event.args[2]),
+            amount: ethers.utils.formatEther(event.args[2]),
             note: event.args[3],
             email: event.args[4],
           }));
