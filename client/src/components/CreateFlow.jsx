@@ -168,7 +168,7 @@ const CreateFlow = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Flow Rate (wei/sec)"
+              label="Flow Rate (tokens/sec)"
               variant="outlined"
               value={flowRate}
               onChange={(e) => setFlowRate(e.target.value)}
