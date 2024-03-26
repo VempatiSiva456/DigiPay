@@ -48,6 +48,20 @@ const Superfluid = () => {
         fetchUserName();
       });
     }
+
+    const handleAccountsChanged = (accounts) => {
+      setIsWalletConnected(accounts.length > 0);
+    };
+
+    if (ethereum) {
+      ethereum.request({ method: "eth_accounts" }).then(handleAccountsChanged);
+
+      ethereum.on("accountsChanged", handleAccountsChanged);
+
+      return () => {
+        ethereum.removeListener("accountsChanged", handleAccountsChanged);
+      };
+    }
   }, [setUserName]);
 
   return (

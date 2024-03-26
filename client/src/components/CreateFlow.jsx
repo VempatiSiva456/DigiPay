@@ -43,6 +43,14 @@ const CreateFlow = () => {
     };
 
     checkIfWalletIsConnected();
+
+    const handleAccountsChanged = (accounts) => {
+      setWalletConnected(accounts.length > 0);
+    };
+
+    window.ethereum?.on('accountsChanged', handleAccountsChanged);
+
+    return () => window.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
   }, []);
 
   const createNewFlow = async () => {

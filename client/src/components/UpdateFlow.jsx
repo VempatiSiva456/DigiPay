@@ -35,6 +35,14 @@ const UpdateFlow = () => {
     };
 
     checkWalletConnection();
+    const handleAccountsChanged = (accounts) => {
+      setIsWalletConnected(accounts.length > 0);
+    };
+
+    window.ethereum?.on("accountsChanged", handleAccountsChanged);
+
+    return () =>
+      window.ethereum?.removeListener("accountsChanged", handleAccountsChanged);
   }, []);
 
   const updateExistingFlow = async () => {
