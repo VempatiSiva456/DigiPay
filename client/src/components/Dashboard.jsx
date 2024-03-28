@@ -90,7 +90,7 @@ const Dashboard = () => {
 
       fetchUserName();
     }
-  }, [setAbi, setUserName]);
+  }, [setAbi, setDigiTokenAbi, setUserName]);
 
   if (!isMetaMaskInstalled) {
     return (
