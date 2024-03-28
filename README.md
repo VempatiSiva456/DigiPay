@@ -68,3 +68,11 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 ### Demo Video Link (v2):
 
 - [Click Here](https://drive.google.com/file/d/1Qd6dz5NZS1ayRQt6LF4xotTaXZbnT_e8/view?usp=drivesdk)
+
+## Version 3:
+
+### Deployed a contract of ERC20 tokens DIGI tokens where a user of Digi App can claim those in the Application for usage, testing purpose. 
+
+### An account can claim only 100 tokens per week and the account should also have less than 100 tokens if they are claiming.
+
+### Future Implementations: Want to make transactions done using our Digi Tokens in our application. And want to implement a wrapping function to interact with superfluid with these tokens only.

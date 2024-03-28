@@ -19,6 +19,7 @@ contract DigiToken is ERC20, ReentrancyGuard, Ownable {
     function claimTokens(uint256 amount) public nonReentrant {
         require(amount > 0, "Amount must be greater than zero");
         require(amount <= MAX_CLAIMABLE_PER_WEEK, "Cannot claim more than 100 tokens per week");
+        require(balanceOf(msg.sender) < MAX_CLAIMABLE_PER_WEEK, "Your balance is already 100 or more, cannot claim more tokens");
 
         uint256 currentWeek = getCurrentWeek();
         if (lastClaimTimestamp[msg.sender] / 1 weeks < currentWeek) {

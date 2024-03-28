@@ -41,7 +41,7 @@ const Dashboard = () => {
   const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
   const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
-  const digitokensContractAddress = "0xB98D196DC476ac68c5293Ac46e28613f4D8Ee3ba";
+  const digitokensContractAddress = "0xcA9C753D4d4968167D12d9f8cf39fcF53271202C";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
   const [digitoken_abi, setDigiTokenAbi] = useState([]);
@@ -174,7 +174,8 @@ const Dashboard = () => {
               </Button>{" "}
               and select network as Polygon PoS (Mumbai).
 
-              To import DIGI Tokens in your wallet, use this contract address: <b>0xB98D196DC476ac68c5293Ac46e28613f4D8Ee3ba</b>
+              To import DIGI Tokens in your wallet, use this contract address: <b>0xcA9C753D4d4968167D12d9f8cf39fcF53271202C</b>
+             <br></br> <u> A user can get only 100 tokens per week, and his account should have less than 100 Digi to claim more </u>
             </Typography>
           </Alert>
           <ConnectWallet
