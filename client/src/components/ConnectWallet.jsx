@@ -10,18 +10,15 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import digiTokenAbiData from "../digi-token-abi.json";
 
-const contractAddress = "0x4BCde7A407AC377E89991fFc31818350feD47Ae1";
-const digitokensContractAddress = "0xaC6292A3235985FcA638A9658823af5abccaC28A";
+const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
 
 const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
 const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [digiTokenBalance, setDigiTokenBalance] = useState("");
+  const [currentBalance, setCurrentBalance] = useState("");
   const [metamask, setMetamask] = useState(false);
-  const [digitoken_abi, setDigiTokenAbi] = useState([]);
 
   useEffect(() => {
     const checkIfWalletIsConnected = async () => {
@@ -33,11 +30,11 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
           });
           if (accounts.length > 0) {
             setCurrentAccount(accounts[0]);
-            await getDigiTokenBalance(accounts[0]);
+            await getBalance(accounts[0]);
             onStatusChange(true);
           } else {
             setCurrentAccount("");
-            setDigiTokenBalance("");
+            setCurrentBalance("");
             onStatusChange(false);
           }
         } catch (error) {
@@ -52,28 +49,13 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
     };
 
     checkIfWalletIsConnected();
+  
+  }, [onStatusChange]);
 
-    if (isMetaMaskInstalled) {
-  
-        const fetchDigiTokenAbi = async () => {
-          try {
-            const digi_abi = digiTokenAbiData.abi;
-            setDigiTokenAbi(digi_abi);
-          } catch (error) {
-            console.error("Error fetching ABI:", error);
-          }
-        };
-  
-        fetchDigiTokenAbi();
-      }
-  
-  }, [onStatusChange, setDigiTokenAbi]);
-
-  const getDigiTokenBalance = async (account) => {
+  const getBalance = async (account) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const digiTokenContract = new ethers.Contract(digitokensContractAddress, digitoken_abi, provider);
-    const balance = await digiTokenContract.balanceOf(account);
-    setDigiTokenBalance(ethers.utils.formatUnits(balance, 18));
+    const balance = await provider.getBalance(account);
+    setCurrentBalance(ethers.utils.formatEther(balance));
   };
 
   useEffect(() => {
@@ -82,11 +64,11 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
       window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
-          await getDigiTokenBalance(accounts[0]);
+          await getBalance(accounts[0]);
           onStatusChange(true);
         } else {
           setCurrentAccount("");
-          setDigiTokenBalance("");
+          setCurrentBalance("");
           onStatusChange(false);
         }
       });
@@ -97,7 +79,7 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
 
   useEffect(() => {
     if (currentAccount) {
-      getDigiTokenBalance(currentAccount);
+      getBalance(currentAccount);
     }
   }, [refreshTrigger, currentAccount]);
 
@@ -110,7 +92,7 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
         });
         if (accounts.length) {
           setCurrentAccount(accounts[0]);
-          await getDigiTokenBalance(accounts[0]);
+          await getBalance(accounts[0]);
           onStatusChange(true);
         }
       } catch (error) {
@@ -163,7 +145,7 @@ const ConnectWallet = ({ onStatusChange, refreshTrigger }) => {
                 <TableCell component="th" scope="row">
                   Balance:
                 </TableCell>
-                <TableCell align="right">{digiTokenBalance} DIGI</TableCell>
+                <TableCell align="right">$ {currentBalance}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

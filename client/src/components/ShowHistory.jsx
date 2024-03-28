@@ -19,7 +19,7 @@ const apiUrl = import.meta.env.VITE_API_URL || "/api";
 const ShowHistory = ({ refreshTrigger }) => {
   const providerUrl =
     "https://polygon-mumbai.infura.io/v3/52bcd780570e4378afca6c432b67ce94";
-  const contractAddress = "0x3f99F71f7E17BDdd23dECb7773c7a6518E54C056";
+  const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
   const abi = abiData.abi;
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

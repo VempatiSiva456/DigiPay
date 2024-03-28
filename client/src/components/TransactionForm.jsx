@@ -51,11 +51,12 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
       const signer = provider.getSigner();
       console.log(contractAddress, abi, signer);
       const contract = new ethers.Contract(contractAddress, abi, signer);
-      const amountInDigi = ethers.utils.parseUnits(amount, 18);
 
       console.log(contract);
 
-      const txResponse = await contract.sendDigiTokens(recipient, amountInDigi, note, userEmail, { gasLimit: 30000000 });
+      const txResponse = await contract.sendETH(recipient, note, userEmail, {
+        value: ethers.utils.parseEther(amount),
+      });
       console.log("Transaction sent. Waiting for confirmation...");
       const txReceipt = await txResponse.wait();
       console.log("Transaction confirmed:", txReceipt);

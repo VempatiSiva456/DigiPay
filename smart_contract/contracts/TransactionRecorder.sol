@@ -1,18 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 contract TransactionRecorder {
-    IERC20 public digiToken;
     event TransactionRecorded(address indexed sender, address indexed recipient, uint amount, string note, string email);
 
-    constructor(address _digiTokenAddress) {
-        digiToken = IERC20(_digiTokenAddress);
+    function sendETH(address payable recipient, string memory note, string memory email) public payable {
+        require(msg.value > 0, "Amount must be greater than 0");
+
+        (bool sent, ) = recipient.call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
+
+        emit TransactionRecorded(msg.sender, recipient, msg.value, note, email);
     }
 
-    function sendDigiTokens(address recipient, uint amount, string memory note, string memory email) public {
-        require(digiToken.transferFrom(msg.sender, recipient, amount), "Token transfer failed");
-        emit TransactionRecorded(msg.sender, recipient, amount, note, email);
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
     }
 }
+
