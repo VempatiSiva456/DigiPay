@@ -173,6 +173,8 @@ const Dashboard = () => {
                 Polygon Faucet
               </Button>{" "}
               and select network as Polygon PoS (Mumbai).
+
+              To import DIGI Tokens in your wallet, use this contract address: <b>0xB98D196DC476ac68c5293Ac46e28613f4D8Ee3ba</b>
             </Typography>
           </Alert>
           <ConnectWallet
