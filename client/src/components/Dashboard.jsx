@@ -40,8 +40,8 @@ const Dashboard = () => {
 
   const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
-  const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
-  const digitokensContractAddress = "0xaC6292A3235985FcA638A9658823af5abccaC28A";
+  const contractAddress = "0x3f99F71f7E17BDdd23dECb7773c7a6518E54C056";
+  const digitokensContractAddress = "0xB98D196DC476ac68c5293Ac46e28613f4D8Ee3ba";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
   const [digitoken_abi, setDigiTokenAbi] = useState([]);

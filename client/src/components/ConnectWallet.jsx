@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import digiTokenAbiData from "../digi-token-abi.json";
 
-const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
+const contractAddress = "0x4BCde7A407AC377E89991fFc31818350feD47Ae1";
 const digitokensContractAddress = "0xaC6292A3235985FcA638A9658823af5abccaC28A";
 
 const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
