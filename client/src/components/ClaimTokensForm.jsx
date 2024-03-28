@@ -1,39 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import { Button, TextField, Box, CircularProgress, Alert } from "@mui/material";
-const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
-const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
-  const [recipient, setRecipient] = useState("");
+const ClaimTokensForm = ({ contractAddress, abi }) => {
   const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
-  const [userEmail, setUserEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      try {
-        const response = await fetch(apiUrl+"/api/auth/current-user", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-
-        const data = await response.json();
-        setUserEmail(data.email);
-      } catch (error) {
-        console.error("Error fetching user email:", error);
-      }
-    };
-
-    fetchUserEmail();
-  }, [setUserEmail]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,27 +22,19 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      console.log(contractAddress, abi, signer);
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
-      console.log(contract);
-
-      const txResponse = await contract.sendETH(recipient, note, userEmail, {
-        value: ethers.utils.parseEther(amount),
-      });
-      console.log("Transaction sent. Waiting for confirmation...");
+      const txResponse = await contract.claimTokens(ethers.utils.parseUnits(amount, 18));
+      console.log("Claiming tokens. Waiting for confirmation...");
       const txReceipt = await txResponse.wait();
-      console.log("Transaction confirmed:", txReceipt);
-      setSuccessMessage("Transaction Done!");
-      onTransactionComplete();
+      console.log("Tokens claimed:", txReceipt);
+      setSuccessMessage(`Successfully claimed ${amount} DigiTokens!`);
     } catch (error) {
-      console.error("Transaction failed:", error);
-      setErrorMessage("Transaction failed: " + error.message);
+      console.error("Claiming tokens failed:", error);
+      setErrorMessage("Failed to claim tokens. " + error.message);
     } finally {
       setIsLoading(false);
-      setRecipient("");
       setAmount("");
-      setNote("");
     }
   };
 
@@ -96,24 +61,11 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
         </Alert>
       )}
       <TextField
-        label="Recipient Address"
-        value={recipient}
-        onChange={(e) => setRecipient(e.target.value)}
-        required
-        sx={{ margin: "5px", width: "60%" }}
-      />
-      <TextField
-        label="Amount"
+        label="Amount to Claim"
         type="number"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         required
-        sx={{ margin: "5px", width: "60%" }}
-      />
-      <TextField
-        label="Note"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
         sx={{ margin: "5px", width: "60%" }}
       />
       <Button
@@ -127,10 +79,10 @@ const TransactionForm = ({ contractAddress, abi, onTransactionComplete }) => {
         }}
         disabled={isLoading}
       >
-        {isLoading ? <CircularProgress size={24} /> : "Send"}
+        {isLoading ? <CircularProgress size={24} /> : "Claim DigiTokens"}
       </Button>
     </Box>
   );
 };
 
-export default TransactionForm;
+export default ClaimTokensForm;

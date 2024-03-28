@@ -17,8 +17,10 @@ import { useAuth } from "../contexts/AuthContext";
 import ConnectWallet from "./ConnectWallet";
 import TransactionForm from "./TransactionForm";
 import abiData from "../abi.json";
+import digiTokenAbiData from "../digi-token-abi.json";
 import ShowHistory from "./ShowHistory";
 import Footer from "./Footer";
+import ClaimTokensForm from "./ClaimTokensForm";
 const apiUrl = import.meta.env.VITE_API_URL || "/api";
 
 const Dashboard = () => {
@@ -39,8 +41,10 @@ const Dashboard = () => {
   const isMetaMaskInstalled = typeof window.ethereum !== "undefined";
 
   const contractAddress = "0xCD961BA1A211dCdF86E8AC1f2fCE6c909614fDC5";
+  const digitokensContractAddress = "0xaC6292A3235985FcA638A9658823af5abccaC28A";
   const [userName, setUserName] = useState("");
   const [abi, setAbi] = useState([]);
+  const [digitoken_abi, setDigiTokenAbi] = useState([]);
 
   useEffect(() => {
     if (isMetaMaskInstalled) {
@@ -55,9 +59,20 @@ const Dashboard = () => {
 
       fetchAbi();
 
+      const fetchDigiTokenAbi = async () => {
+        try {
+          const digi_abi = digiTokenAbiData.abi;
+          setDigiTokenAbi(digi_abi);
+        } catch (error) {
+          console.error("Error fetching ABI:", error);
+        }
+      };
+
+      fetchDigiTokenAbi();
+
       const fetchUserName = async () => {
         try {
-          const response = await fetch("/api/auth/current-user", {
+          const response = await fetch(apiUrl+"/api/auth/current-user", {
             method: "GET",
             credentials: "include",
           });
@@ -171,6 +186,10 @@ const Dashboard = () => {
               contractAddress={contractAddress}
               abi={abi}
               onTransactionComplete={handleTransactionComplete}
+            />
+            <ClaimTokensForm
+              contractAddress={digitokensContractAddress}
+              abi={digitoken_abi}
             />
             <Box
               sx={{

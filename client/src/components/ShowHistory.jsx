@@ -29,7 +29,7 @@ const ShowHistory = ({ refreshTrigger }) => {
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch("/api/auth/current-user", {
+        const response = await fetch(apiUrl+"/api/auth/current-user", {
           method: "GET",
           credentials: "include",
         });
