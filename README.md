@@ -103,10 +103,10 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 ## Autoscaling and Loadbalancer (accessing private subnets (where we have our servers)):
 
 - **Here is the reference architecture diagram, the same I am implementing:** (Ignore S3 Gateway)
-
 - <img src="./readme-images/architecture.png" alt="Architecture" width="450" height="250">
 
 ### 1. Creating a VPC (Virtual Private Cloud) where we configure 2 availability zones, 2 public subnets, 2 private subnets and 1 NAT Gateway per availability zone. (Size of the VPC: 65536 ips)
+
 - With this VPC, we created some basic layout as shown in the above architecture for now and will create autoscaling group and load balancer further
 
 <img src="./readme-images/internet_gateway.png" alt="Public Subnets Attachment" width="700" height="400">
@@ -119,8 +119,6 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 **Now, the VPC created subnets, internet gateway, NAT gateways, route tables, routes and associated elastic ip addresses, route tables and verified**
 
-
-
 ### 2. Creating Autoscaling group in the VPC we created above
 
 - First Launch a template where we will configure what all ports to allow to the instances we create, and in which vpc, we want to launch this autoscaling.
@@ -128,7 +126,6 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 - I am not attaching any load balancer now, I want to create it later in the public subnets.
 - Now, as the name suggests, autoscaling, that means it can dynamically create more instances if there is so much traffic incoming and can remove instances if there is less traffic.
 - So, created a desired capacity of 2 instances (to start with 2 instances). And configured maximum instances it can go in peak time are 4, and minimum it can go is 1.
-
 - And, now as we created autoscaling group, we can check whether it created two instances for us or not in two private subnets (as my region ap-south-1, one instance i need in private ap-south-1a, other in private ap-south-1b as configured earlier in autoscaling creation).
 
 <img src="./readme-images/autoscaling.png" alt="Auto Scaling Group" width="750" height="200">
@@ -146,21 +143,13 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 <img src="./readme-images/copying_key.png" alt="Copying Key" width="950" height="100">
 
 - Now, I logged into host using it's public ipv4 address
-
 - <img src="./readme-images/login_host.png" alt="Login to Host" width="850" height="150">
-
 - See now, As I copied, I can see the key here
-
 - <img src="./readme-images/key_ls.png" alt="Key Copied" width="850" height="150">
-
 - And I use this key to login to private instance (instance which is in private subnet) using private ip address
-
 - <img src="./readme-images/login_private.png" alt="Login to Private IP" width="550" height="320">
-
 - And I ran my server inside that private instance
-
 - <img src="./readme-images/background-run.png" alt="Server Running in Bakcground" width="450" height="250">
-
 - For now, I am running the server only in 1 private instance and there is no server in the other instance.
 
 ### 3. Now, Let's create a Loadbalancer and map it to two public subnets in the VPC
@@ -188,4 +177,24 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 ### Let's Try using someother python basic server in other instance and check what happens
 
+- The DNS Name Link in Loadbalancer using which one can access the servers and through which we send requests for accessing servers: [http://project-example-286412306.ap-south-1.elb.amazonaws.com/](http://project-example-286412306.ap-south-1.elb.amazonaws.com/)
 
+**As mentioned, the health check fails in target group and always sends the request to the healthy instance**
+
+<img src="./readme-images/healthy1.png" alt="One instance is Healthy" width="950" height="550">
+
+**Now, As I logged into the 2nd private instance and ran a simple html page using python3 in server port 8000**
+
+<img src="./readme-images/instance2_logs.png" alt="Running server in 2nd instance" width="950" height="550">
+
+- The target group health check succeeds and this instance will also become healthy and requests will be sent evenly to both the servers (which are in private instances).
+
+<img src="./readme-images/healthy2_map.png" alt="Two instances are Healthy in Resource Map" width="750" height="350">
+
+**Now, If we see, sometimes the link directs to application: (running in private instance in private subnet south-1a)**
+
+<img src="./readme-images/instance1_server.png" alt="Application Server" width="950" height="550">
+
+**And sometimes, the link directs to this page where I ran using python3 in 2nd private instance in private subnet south-1b**
+
+<img src="./readme-images/instance2_server.png" alt="Page Server" width="950" height="550">
