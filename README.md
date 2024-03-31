@@ -80,8 +80,21 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 ## Devops (Deploying and Managing Services):
 
-- I deployed this DigiPay application in an AWS EC2 Instance where you can access here: http://13.233.162.121:5000/
+- I deployed this DigiPay application in an AWS EC2 Instance where we can access something like here: http://<instance-public-address>:<port>/
 
-- **Note:** Ip Address can be changed whenever I stop the instance and start again, so, this link might not work when i stopped the instance.
+- At first for subnet in vpc, NACL is by default allowing all traffic, but security group in instance is allowing ssh port only using which we can login in terminal to that instance and run our applications in ports we want (for eg: I run DigiPay in port 5000), and as port 5000 is allowed by nacl now but not yet by security groups. So, it was not opening and after editing inbound traffic where to allow custom tcp port 5000 from anywhere (ipv4). The application started running then. 
 
-- So, creating elastic ip addresses to resolve the above case and deploying the application in a private subnet with security considerations.
+- **Note:** The link might not work when i stopped running in that instance, and ip address changes whenever we start it after stopping it for sometime.
+
+<img src="./readme-images/server-run.png" alt="Server Running" width="350" height="150">
+<img src="./readme-images/application-run.png" alt="Application Running" width="350" height="150">
+<img src="./readme-images/server-stop.png" alt="Server Stopped" width="350" height="150">
+<img src="./readme-images/application-stop.png" alt="Application Stopped" width="350" height="150">
+
+
+- **Figure 1:** Server Running in EC2 Instance on Port 5000
+- **Figure 2:** Application Running in Browser on  http://<instance-public-ip-address>:5000
+- **Figure 3:** Server stopped Running in EC2 Instance
+- **Figure 4:** Application stopped Running in Browser
+
+- Now, creating elastic ip addresses to resolve the above case and deploying the application in private subnet with security considerations, and creating bastania host to mediate between private and public subnets.
