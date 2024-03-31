@@ -71,19 +71,14 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 ## Version 3:
 
-- Deployed a contract of ERC20 tokens DIGI tokens where a user of Digi App can claim those in the Application for usage, testing purpose. 
-
+- Deployed a contract of ERC20 tokens DIGI tokens where a user of Digi App can claim those in the Application for usage, testing purpose.
 - An account can claim only 100 tokens per week and the account should also have less than 100 tokens if they are claiming.
-
 - Future Implementations: Want to make transactions done using our Digi Tokens in our application. And want to implement a wrapping function to interact with superfluid with these tokens only.
-
 
 ## Devops (Deploying and Managing Services):
 
-- I deployed this DigiPay application in an AWS EC2 Instance where we can access something like here: http://<instance-public-address>:<port>/
-
-- At first for subnet in vpc, NACL is by default allowing all traffic, but security group in instance is allowing ssh port only using which we can login in terminal to that instance and run our applications in ports we want (for eg: I run DigiPay in port 5000), and as port 5000 is allowed by nacl now but not yet by security groups. So, it was not opening and after editing inbound traffic where to allow custom tcp port 5000 from anywhere (ipv4). The application started running then. 
-
+- I deployed this DigiPay application in an AWS EC2 Instance where we can access something like here: http://`<instance-public-address>`:`<port>`/
+- At first for subnet in vpc, NACL is by default allowing all traffic, but security group in instance is allowing ssh port only using which we can login in terminal to that instance and run our applications in ports we want (for eg: I run DigiPay in port 5000), and as port 5000 is allowed by nacl now but not yet by security groups. So, it was not opening and after editing inbound traffic where to allow custom tcp port 5000 from anywhere (ipv4). The application started running then.
 - **Note:** The link might not work when i stopped running in that instance, and ip address changes whenever we start it after stopping it for sometime.
 
 <img src="./readme-images/server-run.png" alt="Server Running" width="350" height="150">
@@ -91,10 +86,103 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 <img src="./readme-images/server-stop.png" alt="Server Stopped" width="350" height="150">
 <img src="./readme-images/application-stop.png" alt="Application Stopped" width="350" height="150">
 
+**Figure 1:** Server Running in EC2 Instance on Port 5000
+**Figure 2:** Application Running in Browser on  http://`<instance-public-ip-address>`:5000
+**Figure 3:** Server stopped Running in EC2 Instance
+**Figure 4:** Application stopped Running in Browser
 
-- **Figure 1:** Server Running in EC2 Instance on Port 5000
-- **Figure 2:** Application Running in Browser on  http://<instance-public-ip-address>:5000
-- **Figure 3:** Server stopped Running in EC2 Instance
-- **Figure 4:** Application stopped Running in Browser
+<img src="./readme-images/background-run.png" alt="Server Running in Bakcground" width="450" height="250">
 
-- Now, creating elastic ip addresses to resolve the above case and deploying the application in private subnet with security considerations, and creating bastania host to mediate between private and public subnets.
+**Figure 5:** If we can run the server in background **placing & after npm start (process running in bacground)**, then even if you terminate there in terminal, the application still runs.
+
+- One problem can be only if I stopped running that instance and if I try to start it again the IP iddress changes and so the link changes.
+
+## Autoscaling and Loadbalancer (accessing private subnets (where we have our servers)):
+
+- **Here is the reference architecture diagram, the same I am implementing:** (Ignore S3 Gateway)
+
+- <img src="./readme-images/architecture.png" alt="Architecture" width="450" height="250">
+
+### 1. Creating a VPC (Virtual Private Cloud) where we configure 2 availability zones, 2 public subnets, 2 private subnets and 1 NAT Gateway per availability zone. (Size of the VPC: 65536 ips)
+- With this VPC, we created some basic layout as shown in the above architecture for now and will create autoscaling group and load balancer further
+
+<img src="./readme-images/internet_gateway.png" alt="Public Subnets Attachment" width="700" height="400">
+
+**Public subnets attached to the route table and the internet Gateway**
+
+<img src="./readme-images/nat_gateways.png" alt="Private Subnets Attachment" width="700" height="400">
+
+**Private subnets attached to different route tables and to NAT Gateways in public subnets**
+
+**Now, the VPC created subnets, internet gateway, NAT gateways, route tables, routes and associated elastic ip addresses, route tables and verified**
+
+
+
+### 2. Creating Autoscaling group in the VPC we created above
+
+- First Launch a template where we will configure what all ports to allow to the instances we create, and in which vpc, we want to launch this autoscaling.
+- After creating template, while creating autoscaling group, I configured that I want 2 ec2 instances to be in 2 private subnets.
+- I am not attaching any load balancer now, I want to create it later in the public subnets.
+- Now, as the name suggests, autoscaling, that means it can dynamically create more instances if there is so much traffic incoming and can remove instances if there is less traffic.
+- So, created a desired capacity of 2 instances (to start with 2 instances). And configured maximum instances it can go in peak time are 4, and minimum it can go is 1.
+
+- And, now as we created autoscaling group, we can check whether it created two instances for us or not in two private subnets (as my region ap-south-1, one instance i need in private ap-south-1a, other in private ap-south-1b as configured earlier in autoscaling creation).
+
+<img src="./readme-images/autoscaling.png" alt="Auto Scaling Group" width="750" height="200">
+
+**Now the question comes, As we don't have public ipv4 addresses to these instances as we created those in private subnets, How do I login into those instances as I want to create my servers there only**
+
+- Now, I created a bastion-host instance which can act as mediator between public and private subnets
+- So, Inside the VPC, I created this bastion host giving permission to allow ssh port (where we login) (enabled auto-assign public ip address, as we have to login using that)
+- As, I launched this host instance, I will first login to this host instance and from there I login to private instance.
+
+**But to login, I need encrypted key right?, I have that in locally to login to host instance, but from there how to login to private instance without this key?**
+
+**So, What I did is copied the key from local machine to host instance using scp (secure copy protocol)**
+
+<img src="./readme-images/copying_key.png" alt="Copying Key" width="950" height="100">
+
+- Now, I logged into host using it's public ipv4 address
+
+- <img src="./readme-images/login_host.png" alt="Login to Host" width="850" height="150">
+
+- See now, As I copied, I can see the key here
+
+- <img src="./readme-images/key_ls.png" alt="Key Copied" width="850" height="150">
+
+- And I use this key to login to private instance (instance which is in private subnet) using private ip address
+
+- <img src="./readme-images/login_private.png" alt="Login to Private IP" width="550" height="320">
+
+- And I ran my server inside that private instance
+
+- <img src="./readme-images/background-run.png" alt="Server Running in Bakcground" width="450" height="250">
+
+- For now, I am running the server only in 1 private instance and there is no server in the other instance.
+
+### 3. Now, Let's create a Loadbalancer and map it to two public subnets in the VPC
+
+- Created an Application Loadbalancer (Layer 7 Loadbalancer), configured vpc, security group (for allowing specific traffic).
+- I added a security group which allows ssh port 22, and http port 8000, where I am running server in that port 8000.
+- Now, created a target group with specific instances we select to support loadbalancing (using http port: 8000, as I allowed already).
+- Now, Create Loadbalancer by mapping to both public subnets and attach target group we created, and let's leave the accessible port of loadbalancer as 80 (HTTP port 80) for now.
+- And the load balancer is created, but it shows that port is not accessible as we didn't allow http port 80 in any security group yet.
+- Now change the configuration of security group of loadbalancer to allow traffic from http port 80, then that error is gone :)
+
+### 4. Now, we can see that I implemented the full architecture as shown in architecture image:
+
+- Abstraction: The DNS name abstracts the IP addresses of the individual servers behind the load balancer. Users or client applications don't need to know about the specific servers or their IP addresses; they only need to know the DNS name.
+- Now, we use the DNS name of our loadbalancer to access the server.
+
+<img src="./readme-images/dns_loadbalancer.png" alt="Accessing Server Using DNS Name in Loadbalancer" width="950" height="550">
+
+### Remember, I am running the server in one private instance only, the other is for now unhealthy in target group
+
+<img src="./readme-images/resource_map.png" alt="Resource Map" width="750" height="220">
+
+- Target group is doing health check and it is only forwarding the request to healthy loadbalancer.
+- If we disable that health check, then it will send the server request to both instances. So, sometimes we get error and sometimes, we get the application.
+
+### Let's Try using someother python basic server in other instance and check what happens
+
+
