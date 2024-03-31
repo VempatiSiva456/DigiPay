@@ -71,8 +71,13 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 ## Version 3:
 
-### Deployed a contract of ERC20 tokens DIGI tokens where a user of Digi App can claim those in the Application for usage, testing purpose. 
+- Deployed a contract of ERC20 tokens DIGI tokens where a user of Digi App can claim those in the Application for usage, testing purpose. 
 
-### An account can claim only 100 tokens per week and the account should also have less than 100 tokens if they are claiming.
+- An account can claim only 100 tokens per week and the account should also have less than 100 tokens if they are claiming.
 
-### Future Implementations: Want to make transactions done using our Digi Tokens in our application. And want to implement a wrapping function to interact with superfluid with these tokens only.
+- Future Implementations: Want to make transactions done using our Digi Tokens in our application. And want to implement a wrapping function to interact with superfluid with these tokens only.
+
+
+## AWS (Deploying and Managing Services):
+
+- I deployed this DigiPay application in an AWS EC2 Instance where you can access here: http://13.127.0.250:5000/
