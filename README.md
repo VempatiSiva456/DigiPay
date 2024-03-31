@@ -78,6 +78,10 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 - Future Implementations: Want to make transactions done using our Digi Tokens in our application. And want to implement a wrapping function to interact with superfluid with these tokens only.
 
 
-## AWS (Deploying and Managing Services):
+## Devops (Deploying and Managing Services):
 
-- I deployed this DigiPay application in an AWS EC2 Instance where you can access here: http://13.127.0.250:5000/
+- I deployed this DigiPay application in an AWS EC2 Instance where you can access here: http://13.233.162.121:5000/
+
+- **Note:** Ip Address can be changed whenever I stop the instance and start again, so, this link might not work when i stopped the instance.
+
+- So, creating elastic ip addresses to resolve the above case and deploying the application in a private subnet with security considerations.
