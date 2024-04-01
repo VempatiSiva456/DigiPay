@@ -19,11 +19,6 @@ WORKDIR /usr/src/app
 # Copy the built client application to the container
 COPY client/dist ./client/dist
 
-# Environment variables
-ENV DB_CONNECTION_STRING=mongodb+srv://vempatisiva7:Rgukt%40N190604@digipay.rflrxlp.mongodb.net/?retryWrites=true&w=majority&appName=digipay
-ENV JWT_SECRET="Rgukt@N190604"
-ENV PORT=5000
-
 # Expose the port the server listens on
 EXPOSE 5001
 
