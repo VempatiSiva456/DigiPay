@@ -198,3 +198,9 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 **And sometimes, the link directs to this page where I ran using python3 in 2nd private instance in private subnet south-1b**
 
 <img src="./readme-images/instance2_server.png" alt="Page Server" width="950" height="550">
+
+## After building docker image and running docker container, allowing 5001 port inbound to the ec2 instance, 
+
+- Here I can access my application: [http://13.235.71.59:5001/](http://13.235.71.59:5001/)
+
+- This I can access until the ip address changes for instance (that is when we stop and start the instance again);
