@@ -201,6 +201,6 @@ For now, I am able to get Mumbai faucet MATIC tokens only, and those I am using 
 
 ## After building docker image and running docker container, allowing 5001 port inbound to the ec2 instance, 
 
-- Here I can access my application: [http://13.235.71.59:5001/](http://13.235.71.59:5001/)
+- Here I can access my application: [http://15.207.254.182:5001/](http://15.207.254.182:5001/)
 
 - This I can access until the ip address changes for instance (that is when we stop and start the instance again);
