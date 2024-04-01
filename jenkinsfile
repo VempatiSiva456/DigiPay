@@ -1,0 +1,17 @@
+pipeline {
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        IMAGE_NAME = 'vempatisiva456/digipay'
+    }
+    stages {
+        stage('Build & Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        docker.build("${IMAGE_NAME}").push("latest")
+                    }
+                }
+            }
+        }
+    }
+}
