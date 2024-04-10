@@ -316,20 +316,4 @@ pipeline {
 - We have codecommit (equivalent to github in AWS), codepipeline, codebuild, codedeploy and AWS EKS (k8s) to perform CI/CD in AWS itself (Everything at one place).
 
 
-## The Best Resources:
-
-### Jenkins end to end CICD Implementation:
-
-[https://youtu.be/JGQI5pkK82w?si=r9FXeWDWTKoBLeFn](https://youtu.be/JGQI5pkK82w?si=r9FXeWDWTKoBLeFn)
-
-### Jenkins Zero to Hero repository by Abhishek Veeramalla:
-
-[https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero/](https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero/)
-
-
-### AWS Zero to Hero Playlist by Abhishek Veeramalla:
-
-[https://youtube.com/playlist?list=PLdpzxOOAlwvLNOxX0RfndiYSt1Le9azze&si=3I7c_TClLYroTwwG](https://youtube.com/playlist?list=PLdpzxOOAlwvLNOxX0RfndiYSt1Le9azze&si=3I7c_TClLYroTwwG)
-
-
 # Thank You
